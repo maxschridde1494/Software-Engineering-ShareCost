@@ -1,0 +1,331 @@
+<head>
+	<title>ShareCost</title>
+	<meta name="description" content="ShareCost helps you split purchases between groups of people quickly and easily. Just log in with Venmo to start sharing.">
+</head>
+
+<template name="login">
+	<div class = "row text-center">
+		<h1>Welcome!</h1>
+	</div>
+	<div class = "row text-center">
+		{{#if currentUser}}
+			You are logged in as {{currentUser.services.venmo.display_name}}
+			<button id="logout">Logout</button>
+		{{else}}
+			<button id="venmo-login" class="btn btn-default">Login with Venmo</button>
+		{{/if}}
+	</div>
+</template>
+
+<template name='home'>
+	<div class = "row">
+		<div id = "center" class = "col-xs-11 center-block text-center home-content">
+			{{#if currentUser}}
+				<div class = "row">
+					<p class = "pcreate"><button id="create" class="btn btn-default">Create a Proposal</button></p>
+					<p class = "pgcreate"><button id="createGroup" class="btn btn-default">Create a Group</button></p>
+					<p class = "pgroup"><button id="mygroups" class="btn btn-default">View My Groups</button></p>
+				</div>
+				<div class = "col-xs-6">
+					<div class = "created">
+						<h3>Your purchase proposals...</h3>
+						<ul class = "purchase-list">
+							{{#each createdPurchases}}
+								{{> purchaseProposal}}
+							{{/each}}
+						</ul>
+					</div>
+				</div>
+				<div class ="col-xs-6">
+					<div class = "shared">
+						<h3>Other purchase proposals...</h3>
+						<ul class = "purchase-list">
+							{{#each invitedPurchases}}
+								{{> purchaseProposal}}
+							{{/each}}
+						</ul>
+					</div>
+				</div>
+			{{else}}
+				<h2>Waiting to log in...</h2>
+			{{/if}}
+		</div>
+	</div>
+</template>
+
+<template name="BaseLayout">
+	<div class = "topbar">
+		<a href="/">ShareCost</a>
+		{{#if currentUser}}
+			<button id="logout" class="btn btn-default topbar-logout right-align">Logout</button>
+			<img class = "topbar-pic right-align" src={{getProfilePictureUrl}} alt="text">
+		{{/if}}
+		<div id = "center"></div>
+	</div>
+	<div class = "topbar-ghost"></div>
+	<div class = "container">
+		{{> yield}}
+	</div>
+</template>
+
+<template name="create">
+	<div class = "row text-center">
+		<h2>Create a Proposal</h2>
+	</div>
+	<div class = "row">
+		<div id = "center" class = "proposal-form col-xs-10 center-block">
+			<form class="new-purchase form-horizontal" role = "form">
+				<div class="form-group">
+					<label class = "control-label" for="title">Title:</label>
+					<input type="text" name = "title" class="form-control" id="title">
+				</div>
+				<div class="form-group">
+					<label class = "control-label" for="description">Description:</label>
+					<textarea name = "description" class="form-control" id="description"></textarea>
+				</div>
+				<div class="form-group">
+                    <label class = "control-label" for="cost">Total Cost:</label>
+			        <input type="text" name = "cost" class="cost-input form-control" id="cost">
+                    <input type="checkbox" name="unevenSplit" class="cost-checkbox" checked> Split evenly
+				</div>
+				<div class = "form-group">
+					<ul id="selected-friends">
+						{{#each selectedFriends}}
+							<li id="{{id}}" class = "added-friend">
+								<div class="label-name">{{label}}</div>
+								{{#if costChecked}}
+									<input type="text" class="hide-init cost-share form-control">
+								{{else}}
+									<input type="text" class="cost-share form-control">
+								{{/if}}
+								{{#unless groupChecked}}
+									<button type="button" class="delete-friend btn btn-default">Remove</button>
+								{{/unless}}
+							</li>
+								<div id="center"></div>
+						{{/each}}
+					</ul>
+				</div>
+				<input type="checkbox" name="selectGroup" class="group-checkbox" unchecked> Select Group
+				{{#if groupChecked}}
+				<div class = "form-group select-group">
+					<label class = "control-label">Select Group:</label>
+					<select class="selected-group">
+						<option selected disabled hidden value=""></option>
+						{{#each getGroups}}
+							<option id={{_id}}>{{title}}</option>
+						{{/each}}
+					</select>
+				</div>
+				{{else}}
+				<div class = "form-group select-friends">
+					<label class = "control-label" for="friends-autocomplete">Add Friends:</label>
+					{{> friendsAutocomplete}}
+				</div>
+				{{/if}}
+				<a href="/" class="cancel btn btn-default">Cancel</a>
+				<input class = "btn btn-default" type="submit" value="Submit">
+			</form>
+		</div>
+	</div>
+</template>
+
+<template name="friendsAutocomplete">
+	<input type="text" class = "form-control" name="friends" id="friends-autocomplete">
+</template>
+
+<template name="purchaseProposal">
+	<div class = "row proposal">
+		{{#if isCreator}}
+			<button class = "close-button btn-default" type="button">&#10006;</button>
+		{{/if}}
+		<div class = "row wrapper"><h3><a href={{getPurchaseRoute}}>{{title}}</a> - ${{cost}}</h3></div>
+		<div class = "col-xs-9 left-align">
+			<h5 class = "wrapperx">Created by {{getCreatorName}}</h5>
+			<p id = "description" class = "wrapper">{{description}}</p>
+			<div>
+				<p>Accepted:</p>
+				<ul>
+					{{#each getAcceptedNames}}
+						<li class = "wrapperx">{{.}}</li>
+					{{/each}}
+				</ul>
+			</div>
+			<div>
+				<p>Rejected:</p>
+				<ul>
+					{{#each getRejectedNames}}
+						<li class = "wrapperx">{{.}}</li>
+					{{/each}}
+				</ul>
+			</div>
+			<div>
+				<p>Pending:</p>
+				<ul>
+					{{#each getPendingNames}}
+						<li class = "wrapperx">{{.}}</li>
+					{{/each}}
+				</ul>
+			</div>
+		</div>
+		<div class = "accept-reject col-xs-3">
+			{{#unless isCreator}}
+				{{#if hasAccepted}}
+					<img class=reply-image src="check.png" alt="accept">
+				{{else}}
+					{{#if hasRejected}}
+						<img class=reply-image src="x.png" alt="reject">
+					{{else}}
+						<div><button id="accept-butt" class = "btn btn-default">Accept</button></div>
+						<div><button id="reject-butt" class = "btn btn-default">Reject</button></div>
+					{{/if}}
+				{{/if}}
+			{{/unless}}
+		</div>
+	</div>
+</template>
+
+<template name="ShowPurchase">
+	<div class = "row purchase-page">
+		<div id = "center" class = "proposal-form col-xs-10 center-block">
+			<h2 class="text-center wrapper">{{title}} - ${{cost}}</h2>
+			<div class = "row">
+				<div class = "col-xs-9">
+					<p class = "wrapper">Created by: {{getCreatorName}}</p>
+					<p class = "wrapper">{{description}}</p>
+					<div>
+						<p>Accepted:</p>
+						<ul>
+							{{#each getAcceptedNames}}
+								<li class = "wrapper">{{.}}</li>
+							{{/each}}
+						</ul>
+					</div>
+					<div>
+						<p>Rejected:</p>
+						<ul>
+							{{#each getRejectedNames}}
+								<li class = "wrapper">{{.}}</li>
+							{{/each}}
+						</ul>
+					</div>
+					<div>
+						<p>Pending:</p>
+						<ul>
+							{{#each getPendingNames}}
+								<li class = "wrapper">{{.}}</li>
+							{{/each}}
+						</ul>
+					</div>
+				</div>
+				<div class = "accept-reject col-xs-3">
+					{{#unless isCreator}}
+						<div><button id="accept-butt" class = "btn btn-default">Accept</button></div>
+						<div><button id="reject-butt" class = "btn btn-default">Reject</button></div>
+					{{/unless}}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class = "row">
+		<div id = "center" class = "row comment-form col-xs-10 center-block">
+			{{#each populateMessages}}
+				<div class="message" id={{id}}>
+					<span class= "posted-by">{{creator}}</span><span class = "wrapper">  {{message}}</span><div class = "posted-at">at {{created_at}}</div>
+					{{#if replying}}
+					{{else}}
+						<button class="reply-button btn btn-default">Reply</button>
+					{{/if}}
+					<ul class="comments">
+						{{#each comments}}
+							<li><span class= "posted-by">{{creator}}</span><span class = "wrapper">  {{message}}</span><div class = "posted-at">at {{created_at}}</div></li>
+						{{/each}}
+					</ul>
+					{{#if replying}}
+						<form class="new-reply form-horizontal" role = "form">
+							<div class="form-group">
+								<label class = "control-label" for="description">Reply:</label>
+								<input type="text" name = "reply" class="form-control" id="reply">
+							</div>
+							<input class = "btn btn-default" type="submit" value="Submit" id="replySubmit">
+						</form>
+					{{/if}}
+				</div>
+			{{/each}}
+		</div>
+		<div id = "center" class = "row comment-form col-xs-8 center-block comment-input">
+			<form class="new-message form-horizontal" role = "form">
+				<div class="form-group">
+					<label class = "control-label" for="description">Message:</label>
+					<input type="text" name = "message" class="form-control" id="message">
+				</div>
+				<input class = "btn btn-default" type="submit" value="Submit" id="messageSubmit">
+			</form>
+		</div>
+		<div class = "row footer"></div>
+	</div>
+</template>
+
+<template name="CreateGroup">
+	<div class = "row text-center">
+		<h2>Create a Group</h2>
+	</div>
+	<div class = "row">
+		<div id = "center" class = "proposal-form col-xs-10 center-block">
+			<form class="new-purchase form-horizontal" role = "form">
+				<div class="form-group">
+					<label class = "control-label" for="title">Group Name:</label>
+					<input type="text" name = "groupName" class="form-control" id="groupName">
+				</div>
+				<div class="form-group">
+					<label class = "control-label" for="description">Description:</label>
+					<textarea name = "description" class="form-control" id="description"></textarea>
+				</div>
+				<div class = "form-group">
+					<ul id="selected-friends">
+						{{#each groupFriends}}
+							<li id="{{id}}" class = "added-friend">
+								<div class="label-name">{{label}}</div>
+								<button type="button" class="delete-friend btn btn-default">Remove</button> </li>
+								<div id="center"></div>
+						{{/each}}
+					</ul>
+				</div>
+				<div class = "form-group select-friends">
+					<label class = "control-label" for="friends-autocomplete">Add Friends:</label>
+					<input type="text" class = "form-control" name="friends" id="friends-autocomplete">
+				</div>
+				<a href="/" class="cancel btn btn-default">Cancel</a>
+				<input class = "btn btn-default" type="submit" value="Submit" id="groupSubmit">
+			</form>
+		</div>
+	</div>
+</template>
+
+<template name = "Groups">
+	<div class = "row text-center home-content">
+		<h2>My Groups</h2>
+		<ul class = "purchase-list">
+			{{#each getGroups}}
+				{{> ShowGroup}}
+			{{/each}}
+		</ul>
+	</div>
+</template>
+
+<template name = "ShowGroup">
+	<div id = "center" class = "row proposal col-xs-8 center-block">
+		<div class = "row wrapper"><h2>{{title}}</h2></div>
+		<div class = "left-align">
+			<p id = "description" class = "wrapper">{{description}}</p>
+			<div>
+				<p>Members:</p>
+				<ul>
+					{{#each getMemberNames}}
+						<li class = "wrapperx">{{.}}</li>
+					{{/each}}
+				</ul>
+			</div>
+		</div>
+	</div>
+</template>

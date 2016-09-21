@@ -1,0 +1,202 @@
+/* CSS declarations go here */
+
+/* TOPBAR */
+.topbar {
+	width: 100%;
+	position: fixed;
+    z-index: 1;
+	top: 0;
+	left: 0;
+	text-align: center;
+	background-color: #29857C;
+	height: 51px;
+}
+.topbar a {
+	color: white;
+	font-size: 36px;
+	margin: 0;
+	width: 200px;
+	position: absolute;
+	top: 0;
+	left: calc(50% - 100px);
+	text-decoration: none;
+}
+.topbar a:hover {
+	text-decoration: none;
+}
+.topbar-ghost {
+	height: 51px;
+}
+.home-content {
+	margin-top: 5%;
+}
+.right-align {
+	float: right;
+}
+.topbar-pic {
+	margin-right: 20px;
+	height: 51px;
+}
+.topbar-logout {
+	margin-top: 8px;
+	margin-right: 20px;
+}
+.left-align {
+	text-align: left;
+}
+#center {
+	float: none;
+}
+#dumbfix {
+	margin-left: -15px;
+}
+.pcreate {
+	text-align: left;
+	display: inline-block;
+	margin-right: 36px;
+}
+.pgcreate {
+	text-align: center;
+	display: inline-block;
+	margin-right: 36px;
+}
+.pgroup {
+	text-align: right;
+	display: inline-block;
+}
+.proposal-form {
+	max-width: 720px;
+	background-color: #EDEAFA;
+	padding: 30px;
+	border-radius: 4px;
+}
+.comment-form {
+	padding: 30px;
+	max-width: 720px;
+}
+.comment-input {
+	margin-top: -60px;
+}
+.comments {
+}
+.message {
+	background-color: #EDEAFA;
+	border-radius: 4px;
+	padding: 10px;
+	margin-bottom: 10px;
+	position: relative;
+    padding-right: 75px;
+}
+.purchase-page .proposal-form {
+	margin-top: 32px;
+}
+
+.wrapper {
+    word-wrap: break-word;
+}
+
+.wrapperx {
+	/*overflow-x: hidden;*/
+	white-space: nowrap;
+}
+
+.cost-input {
+	width: 30%;
+}
+
+.hide-init {
+    visibility: hidden;
+}
+
+.cost-share {
+    width: 70px;
+    display: inline-block;
+}
+
+.label-name {
+    width: 40%;
+    display: inline-block;
+}
+
+.added-friend {
+	width: 60%;
+	line-height: 250%;
+}
+.delete-friend {
+	float: right;
+}
+.cancel {
+	margin-right: 10%;
+}
+.select-friends {
+	margin-bottom: 30px;
+}
+.select-group {
+	margin-bottom: 30px;
+}
+
+.close-button {
+	float: right;
+	margin-right: -30px;
+	margin-top: -30px;
+	background-color: #EDEAFA;
+	border: 0px;
+}
+.created {
+	margin-right: 16px;
+}
+.shared {
+	margin-left: 16px;
+}
+.proposal {
+	margin-top: 30px;
+	padding: 30px;
+	background-color: #EDEAFA;
+	border-radius: 4px;
+}
+.proposal p {
+	margin: 0;
+	padding-bottom: 0;
+}
+#description {
+	padding: 12px;
+}
+.purchase-list {
+	padding: 0;
+}
+.reply-image {
+    width: 50%;
+    height: 50%;
+}
+#accept-butt {
+	margin: auto;
+}
+#reject-butt {
+	margin: auto;
+	margin-top: 20px;
+}
+#message {
+	width: 80%;
+}
+.reply-button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+.new-reply {
+	width: 80%;
+	margin: auto;
+}
+.new-reply .form-group {
+	padding: 2px;
+	margin-bottom: 0;
+}
+.posted-at {
+	font-size: 10px;
+}
+.posted-by {
+	font-weight: 700;
+}
+.footer {
+	margin-bottom: 96px;
+}
