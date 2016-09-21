@@ -1,4 +1,4 @@
-# Sharecost
+# Sharecost: This was a group project for CS169 (Fall 2015) with members Trent McCormick, Nathan Chong, Joel Terry and Alex Ma.
 
 Sharecost allows you to split the cost of any purchase! Login with your Venmo account and add your friends to a purchase!
 
